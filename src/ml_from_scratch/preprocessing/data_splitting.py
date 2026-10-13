@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def split(dataset:pd.DataFrame ,train_percent:float, validation_percent:float | int = 0 , test_percent:float | int = 0 , )->tuple:
+def split(dataset:pd.DataFrame ,train_percent:float, validation_percent:float | int = 0 , test_percent:float | int = 0 , )->tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     This function split the dataset into tree parts (train, validation, test).
 
@@ -18,7 +18,7 @@ def split(dataset:pd.DataFrame ,train_percent:float, validation_percent:float | 
     :type dataset: pd.DataFrame
 
     :return: a tuple of three datasets (train, validation, test)
-    :rtype: tuple
+    :rtype: tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
 
     :raises ValueError: if the sum of train_percent, validation_percent and test_percent is not equal to 1
     :raises ValueError: if any of the percents is not between 0 and 1
@@ -36,5 +36,27 @@ def split(dataset:pd.DataFrame ,train_percent:float, validation_percent:float | 
     train_count = int(rows * train_percent)
     validation_count = int(rows * validation_percent)
     test_count = int(rows * test_percent)
+    
+    #wrong one
+    #return (dataset[0:train_count,::], dataset[train_count:train_count+validation_count,::], dataset[train_count+validation_count:train_count+validation_count+test_count,::])
 
-    return (dataset[0:train_count,::], dataset[train_count:train_count+validation_count,::], dataset[train_count+validation_count:train_count+validation_count+test_count,::])
+    return (dataset.iloc[:train_count, :],dataset.iloc[train_count:train_count + validation_count, :],dataset.iloc[train_count + validation_count:train_count + validation_count + test_count, :])
+
+
+def get_input_target(dataset: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
+    """
+    Separate a dataset into input features and target values.
+
+    :param dataset: The dataset to be separated.
+    :type dataset: pd.DataFrame
+
+    :return: A tuple containing the input features and target values.
+    :rtype: tuple[pd.DataFrame, pd.Series]
+
+    :raises ValueError: If the number of columns is less then 2.
+    """
+    column_n : int = len(dataset.columns)
+
+    if column_n < 2:
+        raise ValueError(f"number of columns is {column_n}")
+    return (dataset.iloc[:, :-1],dataset.iloc[:, -1].squeeze())
