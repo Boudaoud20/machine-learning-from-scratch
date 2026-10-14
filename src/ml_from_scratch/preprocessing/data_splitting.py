@@ -59,4 +59,4 @@ def get_input_target(dataset: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
 
     if column_n < 2:
         raise ValueError(f"number of columns is {column_n}")
-    return (dataset.iloc[:, :-1],dataset.iloc[:, -1].squeeze())
+    return (dataset.iloc[:, :-1], dataset.iloc[:, -1])
